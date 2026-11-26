@@ -1,0 +1,9 @@
+uniforme_*M.txt
+desigual_*M.txt
+pagerank
+pagerank_sequencial
+pagerank_paralelo
+check_output
+gera_grafo
+__pycache__/
+*.pyc
