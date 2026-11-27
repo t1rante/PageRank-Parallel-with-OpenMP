@@ -149,8 +149,6 @@ Dessa forma, um speedup superlinear observado pode combinar:
 - diferenças da execução em um ambiente virtualizado pelo WSL2;
 - variação normal entre cinco execuções.
 
-Como faltam métricas diretas de faltas de cache, este trabalho não afirma que cache é a única causa. Ela é uma hipótese consistente com os tempos medidos, mas não foi comprovada pelos dados coletados. Speedups muito acima do ideal devem ser interpretados com cautela e, idealmente, repetidos com medição de cache misses e variação menor na carga da máquina.
-
 A lei de Amdahl ajuda a explicar por que o speedup não acompanha o número de threads: a inversão do grafo continua sequencial e há regiões com criação de threads, barreiras e leitura de memória. O ganho tende a ficar limitado pela parte sequencial e pelo custo de movimentação dos dados.
 
 Os principais gargalos são:
@@ -161,31 +159,35 @@ Os principais gargalos são:
 - WSL2: a virtualização pode limitar ou compartilhar a CPU física;
 - carga externa: outros processos do Windows e da máquina podem interferir nas medidas.
 
-Os testes usaram grafos artificiais com distribuição fixa e uma única máquina. Portanto, os resultados não devem ser generalizados para todas as arquiteturas nem para grafos da internet.
+## Uso de LLMs
 
-## Tempo sequencial por fase
+Para esse projeto, usei LLM (Copilot) principalmente para ajuda de refinamento de textos e criação de código auxiliar (Makefile, medição, criação de tabelas)
 
-Os tempos abaixo são médias das cinco execuções válidas. Todos os tempos estão em segundos.
+### Prompts usados:
 
-| Grafo | Nós (milhões) | Links (milhões) | Voltas | Leitura (s) | Cálculo (s) | Escrita (s) | Total (s) |
-|:--|--:|--:|--:|--:|--:|--:|--:|
-| Uniforme | 1 | 8,0 | 81 | 1,12 | 1,21 | 0,69 | 3,02 |
-| Uniforme | 2 | 16,0 | 84 | 2,45 | 2,58 | 1,37 | 6,40 |
-| Uniforme | 3 | 24,0 | 86 | 3,70 | 4,18 | 2,04 | 9,92 |
-| Uniforme | 4 | 32,0 | 87 | 5,02 | 6,84 | 2,76 | 14,62 |
-| Uniforme | 5 | 40,0 | 88 | 6,19 | 8,56 | 3,43 | 18,17 |
-| Uniforme | 6 | 48,0 | 89 | 7,54 | 14,75 | 4,12 | 26,40 |
-| Uniforme | 7 | 56,0 | 90 | 8,77 | 18,66 | 4,79 | 32,21 |
-| Uniforme | 8 | 64,0 | 90 | 10,02 | 26,41 | 5,47 | 41,89 |
-| Uniforme | 9 | 72,0 | 91 | 11,24 | 29,78 | 6,18 | 47,20 |
-| Uniforme | 10 | 80,0 | 91 | 12,67 | 37,79 | 6,87 | 57,32 |
-| Desigual | 1 | 8,0 | 82 | 1,07 | 1,20 | 0,69 | 2,97 |
-| Desigual | 2 | 16,0 | 85 | 2,31 | 2,60 | 1,37 | 6,27 |
-| Desigual | 3 | 24,0 | 86 | 3,52 | 4,21 | 2,05 | 9,77 |
-| Desigual | 4 | 32,0 | 88 | 4,68 | 6,47 | 2,72 | 13,87 |
-| Desigual | 5 | 40,0 | 89 | 5,88 | 9,55 | 3,41 | 18,83 |
-| Desigual | 6 | 48,0 | 90 | 7,26 | 14,18 | 4,10 | 25,53 |
-| Desigual | 7 | 56,0 | 90 | 8,46 | 18,60 | 4,83 | 31,89 |
-| Desigual | 8 | 64,0 | 91 | 9,53 | 23,12 | 5,41 | 38,07 |
-| Desigual | 9 | 72,0 | 92 | 10,91 | 28,76 | 6,16 | 45,83 |
-| Desigual | 10 | 80,0 | 92 | 12,08 | 32,62 | 6,83 | 51,52 |
+```
+Leia e analise o código pagerank_paralelo.cpp e pagerank_sequencial.cpp, crie para eles os sequintes códigos auxiliares:
+
+- gera_grafo: Um seeder que gera grafos uniformes e desequilibrados de 1 Milhão de nós até 10 Milhões que sejam aceitos pelos códigos fornecidos
+
+- check_output: Confere o resultado da versão paralela com o resultado da versão sequencial
+
+- testa_paralelo: Roda todos os testes na versao paralela
+
+- testa_sequencial: Roda todos os testes na versao sequencial
+
+- analisa.py (Unico obrigatoriamente pyhton): Analise os resultados que devem ser feitos em uma tabela .csv e crie graficos com as metricas obtidas, use matplotlib
+
+Após isso, crie um Makefile que consiga compilar, gerar os grafos e rodar os testes de maneira fácil e intuitiva
+```
+
+```
+Analise o README.md, melhore o texto sem alterar nenhuma informação inserida e formate melhor para um README de github
+```
+
+```
+Crie no Makefile um comando para limpar todos os arquivos gerados para os testes
+
+```
+
+
